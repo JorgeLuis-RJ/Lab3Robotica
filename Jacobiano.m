@@ -1,42 +1,3 @@
-% %%
-% clc
-% clear variables
-% syms l1 l2 l3 l4 l5 l6 q1 q2 q3 pi
-% 
-% % Definición de los eslabones
-% link_sym(1) = Link('revolute', 'alpha',   +pi, 'a',   0, 'd', -l1,  'offset',     0, 'qlim', [-185*pi/180,  185*pi/180], 'modified');
-% link_sym(2) = Link('revolute', 'alpha', +pi/2, 'a',  l2, 'd',   0,  'offset', 0, 'qlim', [-130*pi/180,   20*pi/180], 'modified');
-% link_sym(3) = Link('revolute', 'alpha',     0, 'a',  l3, 'd',   0,  'offset',     0, 'qlim', [-100*pi/180,  144*pi/180], 'modified');
-% % link_sym(4) = Link('revolute', 'alpha', +pi/2, 'a', -l4, 'd', -l5,  'offset',     0, 'qlim', [-350*pi/180,  350*pi/180], 'modified');
-% % link_sym(5) = Link('revolute', 'alpha', -pi/2, 'a',   0, 'd',   0,  'offset',     0, 'qlim', [-120*pi/180,  120*pi/180], 'modified');
-% % link_sym(6) = Link('revolute', 'alpha', +pi/2, 'a',   0, 'd',   0,  'offset',     0, 'qlim', [-350*pi/180,  350*pi/180], 'modified');
-% % Creación de robot
-% Kuka_KR340 = SerialLink(link_sym,'name','KR340');
-% % Definición del Tool
-% R_TCPa3 = [[ 1  0  0];
-%            [ 0  0 -1];
-%            [ 0  1  0]];
-% P_TCPen3 = [  0;
-%              l5;
-%               0];
-% T_TCPa3 = [[R_TCPa3 P_TCPen3]; [0 0 0 1]];
-% Kuka_KR340.tool = T_TCPa3;
-% Kuka_KR340
-% 
-% fKine = simplify(Kuka_KR340.fkine([q1 q2 q3]))
-% 
-% % T_TCPa6;
-% % 
-% % A_6a5 = link_sym(6).A(q6);
-% % A_5a4 = link_sym(5).A(q5);
-% % A_4a3 = link_sym(4).A(q4);
-% % T_6a3 = A_4a3 * A_5a4 * A_6a5 * eye(4);
-% % 
-% % A_3a2 = link_sym(3).A(q3);
-% % A_2a1 = link_sym(2).A(q2);
-% % T_3a1 = A_2a1 * A_3a2 * eye(4);
-% % 
-% % T_TCPa1 = T_3a1 * T_6a3 * T_TCPa6
 %% Modelo Numerico
 close all
 clc
@@ -76,13 +37,20 @@ axis([-40.00 40.00 -40.00 40.00 -30.00 45.00]);
 
 delta = 0.0001;
 q1 = 0;
-q2 = 0;
+q2 = pi/6;
 q3 = 0;
 
 d_dq1 = fKine(L1,L2,L3,L4,L5,q1+delta,q2,q3)-fKine(L1,L2,L3,L4,L5,q1,q2,q3);
 d_dq2 = fKine(L1,L2,L3,L4,L5,q1,q2+delta,q3)-fKine(L1,L2,L3,L4,L5,q1,q2,q3);
 d_dq3 = fKine(L1,L2,L3,L4,L5,q1,q2,q3+delta)-fKine(L1,L2,L3,L4,L5,q1,q2,q3);
 J = 1/delta*[d_dq1, d_dq2, d_dq3]
+
+%%
+J_inv = inv(J);
+
+V_H = [100; 200; 50];
+
+Q_putno = J_inv*V_H
 
 function f = fKine(L1,L2,L3,L4,L5,q1,q2,q3)
     x = L3*(cos(q1)*cos(q2) - cos(pi/2)*sin(q1)*sin(q2)) - L5*(sin(q3)*(cos(q1)*cos(q2) - cos(pi/2)*sin(q1)*sin(q2)) + cos(q3)*(cos(q1)*sin(q2) + cos(pi/2)*cos(q2)*sin(q1))) + L2*cos(q1);
