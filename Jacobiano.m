@@ -50,7 +50,7 @@ J_inv = inv(J);
 
 V_H = [100; 200; 50];
 
-Q_putno = J_inv*V_H
+Q_punto = J_inv*V_H
 
 function f = fKine(L1,L2,L3,L4,L5,q1,q2,q3)
     x = L3*(cos(q1)*cos(q2) - cos(pi/2)*sin(q1)*sin(q2)) - L5*(sin(q3)*(cos(q1)*cos(q2) - cos(pi/2)*sin(q1)*sin(q2)) + cos(q3)*(cos(q1)*sin(q2) + cos(pi/2)*cos(q2)*sin(q1))) + L2*cos(q1);
