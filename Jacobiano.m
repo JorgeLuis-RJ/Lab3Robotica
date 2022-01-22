@@ -45,13 +45,14 @@ d_dq2 = fKine(L1,L2,L3,L4,L5,q1,q2+delta,q3)-fKine(L1,L2,L3,L4,L5,q1,q2,q3);
 d_dq3 = fKine(L1,L2,L3,L4,L5,q1,q2,q3+delta)-fKine(L1,L2,L3,L4,L5,q1,q2,q3);
 J = 1/delta*[d_dq1, d_dq2, d_dq3]
 
-%%
+%% Hallar velocidades articulares
 J_inv = inv(J);
 
 V_H = [100; 200; 50];
 
 Q_punto = J_inv*V_H
 
+%%
 function f = fKine(L1,L2,L3,L4,L5,q1,q2,q3)
     x = L3*(cos(q1)*cos(q2) - cos(pi/2)*sin(q1)*sin(q2)) - L5*(sin(q3)*(cos(q1)*cos(q2) - cos(pi/2)*sin(q1)*sin(q2)) + cos(q3)*(cos(q1)*sin(q2) + cos(pi/2)*cos(q2)*sin(q1))) + L2*cos(q1);
     y = L3*(cos(pi)*cos(q2)*sin(q1) - sin(pi/2)*sin(pi)*sin(q2) + cos(pi/2)*cos(pi)*cos(q1)*sin(q2)) - L5*(sin(q3)*(cos(pi)*cos(q2)*sin(q1) - sin(pi/2)*sin(pi)*sin(q2) + cos(pi/2)*cos(pi)*cos(q1)*sin(q2)) + cos(q3)*(sin(pi/2)*cos(q2)*sin(pi) + cos(pi)*sin(q1)*sin(q2) - cos(pi/2)*cos(pi)*cos(q1)*cos(q2))) + L1*sin(pi) + L2*cos(pi)*sin(q1);
